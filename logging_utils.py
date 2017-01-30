@@ -26,9 +26,10 @@ class IndentedLogger(Logger):
         # see http://code.activestate.com/recipes/496741-object-proxying/ for "the answer"
 
         # this is called only if the attribute was not found the usual way
-        try:
-            return getattr(self.logger, item)
-        except AttributeError as e:
+        lg = object.__getattribute__(self, 'logger')
+        if hasattr(lg, item):
+            return getattr(lg, item)
+        else:
             raise AttributeError('\'' + self.__class__.__name__ + '\' object has no attribute \'' + item + '\'')
 
     def _log(self, level, msg, *args, **kwargs):
